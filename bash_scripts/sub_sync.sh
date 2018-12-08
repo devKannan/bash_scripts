@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ -z $1 ] && [ -z $2 ]
-then tail $0
+then tail -13 $0
 else
 # making directory if not there...
 if [ -d "done" ]
@@ -42,8 +42,11 @@ done
 echo -ne '\n' # just to keep the progress output line undisturbed...
 fi
 # =======HELP===========
-# This script is to do timing correction (delay/advance sync in seconds) to the given subtitle file & create a new file under 'done' folder (it'll be created if it's not there). Every line of verbal quotes in the subtitle file will be delayed or advanced by the given seconds. 
-# [Note: This script uses UNIX Epoch time for seconds manipulation. So advancing time '00:00' may produce error o/p. And Tested with only .srt formats. Oops! sorry...]
+# This script will do timing correction (delay/advance sync in seconds) to the given subtitle file & create a new file under 
+# 'done' folder (it'll be created if it's not there). Every line of verbal quotes in the subtitle file will be delayed or 
+# advanced by the given seconds. 
+# [Note: This script uses UNIX Epoch time for seconds manipulation. So advancing time '00:00' may produce error o/p. Also Please note 
+# that you can't do any milli seconds correction with this script and this script is tested with only .srt formats. Oops! sorry...]
 # Format... 
 # ./sub_sync.sh <time_secs> <subtitle_file.srt> <|a> # time_secs = how many seconds you would want; |a = if you want delay, 
 #	no need to use this option as its optional. but if you want to advance the time, just put 'a' (w/o quotes)
