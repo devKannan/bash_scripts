@@ -1,7 +1,27 @@
 #!/bin/bash
-if [ -z $1 ] && [ -z $2 ]
-then tail -13 $0
-else
+# some variables...
+chr="-->"
+run_="1" # running count set to start value
+re_='^[0-9]+$'
+
+# exit if input(s) not given...
+if [[ -z $1 ]] || [[ -z $2 ]] 
+then echo "Needed One or more Input(s). Consult the help..." && tail -13 $0 && exit 1
+else :
+fi
+
+#exit if no number input is given...
+if ! [[ $1 =~ $re_ ]] 2> /dev/null 
+then echo "Error: No seconds(number) is given or Format is wrong. Consult the help..." && tail -13 $0 && exit 1
+else :
+fi
+
+#exit if no file to prcess...
+if ! [[ -f "$2" ]]
+then echo "Error: No File to process. Consult the help..." && tail -13 $0 && exit 1
+else tot_=$(cat "$2"|wc -l) # total number of lines of the given file
+fi
+
 # making directory if not there...
 if [ -d "done" ]
 then :
@@ -11,13 +31,8 @@ fi
 # removing the given file if its there already...
 rm -f "done/$2" 2> /dev/null
 
-# some variables...
-chr="-->"
-tot_=$(cat "$2"|wc -l) # total number of lines of the given file
-run_="1" # running count set to start value
-
 # fetch the timing part, convert to secs, add/sub secs, convert back to hh:mm:ss & save it
-cat "$2" | while read l
+cat "$2"| while read l
 do
 if [[ $(echo $l | grep -c -- "$chr") -ne 0 ]]
 then 
@@ -40,7 +55,7 @@ printf "`echo "[$run_/$tot_]"` `echo -ne $(for i in $(seq 1 $((100*run_/tot_)) )
 run_=$((run_+1))
 done
 echo -ne '\n' # just to keep the progress output line undisturbed...
-fi
+echo Completed...
 # =======HELP===========
 # This script will do timing correction (delay/advance sync in seconds) to the given subtitle file & create a new file under 
 # 'done' folder (it'll be created if it's not there). Every line of verbal quotes in the subtitle file will be delayed or 
