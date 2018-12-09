@@ -10,13 +10,13 @@ then echo "Needed One or more Input(s). Consult the help..." && tail -13 $0 && e
 else :
 fi
 
-#exit if no number input is given...
+# exit if no number input is given...
 if ! [[ $1 =~ $re_ ]] 2> /dev/null 
 then echo "Error: No seconds(number) is given or Format is wrong. Consult the help..." && tail -13 $0 && exit 1
 else :
 fi
 
-#exit if no file to prcess...
+# exit if no file to prcess...
 if ! [[ -f "$2" ]]
 then echo "Error: No File to process. Consult the help..." && tail -13 $0 && exit 1
 else tot_=$(cat "$2"|wc -l) # total number of lines of the given file
@@ -31,22 +31,22 @@ fi
 # removing the given file if its there already...
 rm -f "done/$2" 2> /dev/null
 
-# fetch the timing part, convert to secs, add/sub secs, convert back to hh:mm:ss & save it
+# fetch the timing part, convert to secs, add/sub secs, convert back to hh:mm:ss & save it.
 cat "$2"| while read l
 do
 if [[ $(echo $l | grep -c -- "$chr") -ne 0 ]]
 then 
-# convert to plain seconds format
+# convert to plain seconds format...
 one_=$(echo $l|awk -F"-->" '{print $1}'|awk -F':|,' '{ print ($1 * 3600) + ($2 * 60) + $3 }')
 one_s=$(echo $l|awk -F"-->" '{print $1}'|awk -F':|,' '{print $4}')
 two_=$(echo $l|awk -F"-->" '{print $2}'|awk -F':|,' '{ print ($1 * 3600) + ($2 * 60) + $3 }')
 two_s=$(echo $l|awk -F"-->" '{print $2}'|awk -F':|,' '{print $4}')
-# adding/subtracting seconds
+# adding/subtracting seconds...
 if [[ $3 == 'a' ]]
 then one_=$((one_-$1)) && two_=$((two_-$1))
 else one_=$((one_+$1)) && two_=$((two_+$1))
 fi
-# convert to hh:mm:ss format from seconds
+# convert to hh:mm:ss format from seconds...
 printf "`date -d@$one_ -u +%H:%M:%S,$one_s` `echo "-->"` `date -d@$two_ -u +%H:%M:%S,$two_s`\n" >> "done/$2"
 else echo $l >> "done/$2"
 fi
